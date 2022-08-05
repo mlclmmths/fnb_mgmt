@@ -10,16 +10,16 @@ var domain = "https://localhost:5100/Foodie";
 ///3. Clock (/)
 ///4. Ins Stock (/)
 ///5. Get Stock (/)
-///6. Upd Menu
-///7. Edit Branch
-///8. Branch Sales
+///6. Upd Menu (/)
+///7. Edit Branch (/)
+///8. Branch Sales (/)
 ///9. Total Sales
 ///10. Add Sales
 ///11. Restock
 ///12. Confirm Stock
 ///13. Categorise
 ///14. Ingredient Ids (/)
-///15. Edit Sales
+///15. Edit Sales (/)
 
 String listJsonFormatter(List<dynamic> inputList) {
   JsonEncoder encoder = const JsonEncoder.withIndent(' ');
@@ -60,6 +60,54 @@ Future<List<Ingredient>> getIngredient() async {
       return ingredientList;
     }
     throw Exception('Failed to load ingredients');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
+Future<List<Sales>> getBranchSales(
+    int branchId, String startDate, String endDate) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/BranchSales'),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: jsonEncode(<String, dynamic>{
+          'BranchId': branchId,
+          'StartDate': startDate,
+          'EndDate': endDate
+        }));
+    if (response.statusCode == 200) {
+      List<Sales> salesList;
+      salesList = (json.decode(response.body) as List)
+          .map((i) => Sales.fromJson(i))
+          .toList();
+      print(listJsonFormatter(salesList));
+      return salesList;
+    }
+    throw Exception('Failed to fetch sales from branch');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
+Future<Sales> updateSales(int salesId, int stat) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/EditSales'),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=UTF-8"
+        },
+        body: jsonEncode(<String, dynamic>{
+          'SalesId': salesId,
+          'Stat': stat,
+        }));
+    if (response.statusCode == 200) {
+      print(response.body);
+      return Sales.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('Failed to edit sales');
   } catch (e) {
     print(e);
     throw Exception(e);
@@ -110,14 +158,38 @@ Future<Role> loginUser(int id, String password) async {
   }
 }
 
-Future<int> clockInOut(String employeeId, bool clockIn) async {
+Future<Branch> editBranch(
+    String name, String location, String menuList, bool removeFlag) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/EditBranch'),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=UTF-8",
+        },
+        body: jsonEncode(<String, dynamic>{
+          'Name': name,
+          'Location': location,
+          'MenuList': menuList,
+          'Remove': removeFlag
+        }));
+    if (response.statusCode == 200) {
+      print(response.body);
+      return Branch.fromJson(jsonDecode(response.body));
+    }
+    throw Exception('Failed to edit branch');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
+Future<int> clockInOut(String employeeId, bool clockFlag) async {
   try {
     final response = await http.post(Uri.parse('$domain/Clock'),
         headers: <String, String>{
           "Content-Type": "application/json; charset=UTF-8",
         },
         body: jsonEncode(
-            <String, dynamic>{'EmployeeId': employeeId, 'ClockIn': clockIn}));
+            <String, dynamic>{'EmployeeId': employeeId, 'ClockIn': clockFlag}));
     if (response.statusCode == 200) {
       print(response.statusCode);
       return response.statusCode;
@@ -158,6 +230,31 @@ Future<Employee> insertNewEmployee(
       return Employee.fromJson(jsonDecode(response.body));
     }
     throw Exception('Failed to create new employee');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
+Future<int> updateMenu(bool removeFlag, String meal, String ingredientsUsed,
+    double price, String category) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/UpdMenu'),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+        body: jsonEncode(<String, dynamic>{
+          'Remove': removeFlag,
+          'Meal': meal,
+          'IngUsed': ingredientsUsed,
+          'Price': price,
+          'Category': category
+        }));
+    if (response.statusCode == 200) {
+      print('OK');
+      return response.statusCode;
+    }
+    throw Exception('Failed to update menu');
   } catch (e) {
     print(e);
     throw Exception(e);

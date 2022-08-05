@@ -10,8 +10,77 @@ class Role {
   Map toJson() => {'role': role};
 }
 
-class Stock {
+class Branch {
+  final bool removeFlag;
+  final String branchName;
+  final String menuList;
+
+  const Branch(
+      {required this.removeFlag,
+      required this.branchName,
+      required this.menuList});
+
+  factory Branch.fromJson(Map<String, dynamic> json) {
+    return Branch(
+        removeFlag: json['Remove'],
+        branchName: json['BranName'],
+        menuList: json['MenuList']);
+  }
+}
+
+class Sales {
+  final int salesId;
+  final String? meal;
+  final String? datetime;
+  final String? stat;
+
+  const Sales({required this.salesId, this.meal, this.datetime, this.stat});
+
+  factory Sales.fromJson(Map<String, dynamic> json) {
+    return Sales(
+        salesId: json['SalesId'],
+        meal: json['Meal'],
+        datetime: json['DateTime'],
+        stat: json['Stat']);
+  }
+
+  Map toJson() => {
+        'salesId': salesId,
+        'meal': meal,
+        'datetime': datetime,
+        'stat': stat,
+      };
+
   @override
+  String toString() {
+    return '{salesId: $salesId, meal: $meal, datetime: $datetime, stat: $stat}';
+  }
+}
+
+// class _Sales extends Sales {
+//   final String stat;
+
+//   const _Sales({required super.salesId, required this.stat});
+
+//   factory _Sales.fromJson(Map<String, dynamic> json) {
+//     return _Sales(
+//       salesId: json['SalesId'],
+//       stat: json['Stat'],
+//     );
+//   }
+
+//   Map toJson() => {
+//         'salesId': salesId,
+//         'stat': stat,
+//       };
+
+//   @override
+//   String toString() {
+//     return '{salesId: $salesId, stat: $stat}';
+//   }
+// }
+
+class Stock {
   final String ingredient;
   final int quantity;
   final double costPerPax;

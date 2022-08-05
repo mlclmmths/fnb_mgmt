@@ -10,6 +10,10 @@ void main() {
   //getStock();
   //insertStock('Spinach', 'g', 3000, 0.00555);
   //clockInOut('1', false);
-  insertNewEmployee(6789, 'John Smith', 'Regional Manager', '000101131234',
-      '0123456789', 'Monfos Fowton', 1800, 'A56789');
+  //insertNewEmployee(6789, 'John Smith', 'Regional Manager', '000101131234',
+  //    '0123456789', 'Monfos Fowton', 1800, 'A56789');
+  //updateMenu(true, 'Pickled Cucumbers', '21,58,60,32,46', 12.5, 'Main Course');
+  //editBranch('Padungan Branch', 'ABC Kopitiam', '9,11,12', false);
+  //getBranchSales(1, '2022-06-30', '2022-07-31');
+  updateSales(2, 1);
 }
