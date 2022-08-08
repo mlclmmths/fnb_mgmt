@@ -28,6 +28,30 @@ class Branch {
   }
 }
 
+class Menu {
+  final String name;
+  final double price;
+
+  const Menu({required this.name, required this.price});
+
+  factory Menu.fromJson(Map<String, dynamic> json) {
+    return Menu(
+      name: json['Name'],
+      price: json['Price'],
+    );
+  }
+
+  Map toJson() => {
+        'name': name,
+        'price': price,
+      };
+
+  @override
+  String toString() {
+    return '{name: $name, price: $price}';
+  }
+}
+
 class Sales {
   final int salesId;
   final String? meal;
@@ -81,35 +105,43 @@ class Sales {
 // }
 
 class Stock {
+  final int ingredientId;
   final String ingredient;
   final int quantity;
+  final String measurement;
   final double costPerPax;
   final double totalCost;
 
   const Stock(
-      {required this.ingredient,
+      {required this.ingredientId,
+      required this.ingredient,
       required this.quantity,
+      required this.measurement,
       required this.costPerPax,
       required this.totalCost});
 
   factory Stock.fromJson(Map<String, dynamic> json) {
     return Stock(
+        ingredientId: json['IngredientId'],
         ingredient: json['Ingredient'],
         quantity: json['Quantity'],
+        measurement: json['Measurement'],
         costPerPax: json['CostPerPax'],
         totalCost: json['TotalCost']);
   }
 
   Map toJson() => {
+        'ingredientId': ingredientId,
         'ingredient': ingredient,
         'quantity': quantity,
+        'measurement': measurement,
         'costPerPax': costPerPax,
         'totalCost': totalCost
       };
 
   @override
   String toString() {
-    return '{ingredient: $ingredient, quantity: $quantity, costPerPax: $costPerPax, totalCost: $totalCost}';
+    return '{ingredientId: $ingredientId, $ingredient, quantity: $quantity, measurement: $measurement, costPerPax: $costPerPax, totalCost: $totalCost}';
   }
 }
 

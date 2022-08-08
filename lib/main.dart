@@ -15,5 +15,7 @@ void main() {
   //updateMenu(true, 'Pickled Cucumbers', '21,58,60,32,46', 12.5, 'Main Course');
   //editBranch('Padungan Branch', 'ABC Kopitiam', '9,11,12', false);
   //getBranchSales(1, '2022-06-30', '2022-07-31');
-  updateSales(2, 1);
+  //updateSales(2, 1);
+  //getTotalSales('2022-07-01', '2022-07-30');
+  getCategoryMenu('Main Course');
 }

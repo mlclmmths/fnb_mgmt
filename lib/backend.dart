@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fnb_mgmt/models.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,11 +15,11 @@ var domain = "https://localhost:5100/Foodie";
 ///6. Upd Menu (/)
 ///7. Edit Branch (/)
 ///8. Branch Sales (/)
-///9. Total Sales
-///10. Add Sales
-///11. Restock
+///9. Total Sales (/)
+///10. Add Sales (X) -- wait for bobby to fix endpoint
+///11. Restock (X) -- wait for bobby to fix endpoint
 ///12. Confirm Stock
-///13. Categorise
+///13. Categorise (/)
 ///14. Ingredient Ids (/)
 ///15. Edit Sales (/)
 
@@ -66,6 +68,31 @@ Future<List<Ingredient>> getIngredient() async {
   }
 }
 
+Future<List<Menu>> getCategoryMenu(String category) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/Categorise'),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        body: jsonEncode(<String, dynamic>{
+          'Category': category,
+        }));
+    if (response.statusCode == 200) {
+      List<Menu> categoryList;
+      categoryList = (json.decode(response.body) as List)
+          .map((e) => Menu.fromJson(e))
+          .toList();
+
+      print(listJsonFormatter(categoryList));
+      return categoryList;
+    }
+    throw Exception('Failed to get category menu');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
 Future<List<Sales>> getBranchSales(
     int branchId, String startDate, String endDate) async {
   try {
@@ -108,6 +135,26 @@ Future<Sales> updateSales(int salesId, int stat) async {
       return Sales.fromJson(jsonDecode(response.body));
     }
     throw Exception('Failed to edit sales');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
+Future<double> getTotalSales(String startDate, String endDate) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/TotalSales'),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: jsonEncode(
+            <String, dynamic>{'StartDate': startDate, 'EndDate': endDate}));
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      return jsonDecode(response.body);
+    }
+    throw Exception('Failed to get total');
   } catch (e) {
     print(e);
     throw Exception(e);
