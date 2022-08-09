@@ -16,12 +16,13 @@ var domain = "https://localhost:5100/Foodie";
 ///7. Edit Branch (/)
 ///8. Branch Sales (/)
 ///9. Total Sales (/)
-///10. Add Sales (X) -- wait for bobby to fix endpoint
-///11. Restock (X) -- wait for bobby to fix endpoint
-///12. Confirm Stock
+///10. Add Sales (/)
+///11. Restock (/)
+///12. Confirm Stock (/)
 ///13. Categorise (/)
 ///14. Ingredient Ids (/)
 ///15. Edit Sales (/)
+/// FINITO
 
 String listJsonFormatter(List<dynamic> inputList) {
   JsonEncoder encoder = const JsonEncoder.withIndent(' ');
@@ -161,6 +162,47 @@ Future<double> getTotalSales(String startDate, String endDate) async {
   }
 }
 
+Future<int> insertSales(
+    String branchName, bool isCash, List<String> meal) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/AddSales'),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: jsonEncode(<String, dynamic>{
+          'BranName': branchName,
+          'IsCash': isCash,
+          'Meal': meal
+        }));
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      return response.statusCode;
+    }
+    throw Exception('Failed to add sales');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
+Future<int> confirmStock(ConfirmStock confirmStock) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/ConfirmStock'),
+        headers: <String, String>{
+          "Content-type": "application/json; charset=UTF-8",
+        },
+        body: confirmStockToJson(confirmStock));
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      return response.statusCode;
+    }
+    throw Exception('Failed to confirm stock');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
 Future<int> insertStock(
     String ingredient, String unit, int quantity, double price) async {
   try {
@@ -186,11 +228,34 @@ Future<int> insertStock(
   }
 }
 
+Future<List<Stock>> restockIngredients(Restock restock) async {
+  try {
+    final response = await http.post(Uri.parse('$domain/Restock'),
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: restockToJson(restock));
+    print(response.body);
+    if (response.statusCode == 200) {
+      List<Stock> restockList;
+      restockList = (json.decode(response.body) as List)
+          .map((i) => Stock.fromJson(i))
+          .toList();
+      print(listJsonFormatter(restockList));
+      return restockList;
+    }
+    throw ('Failed to restock ingredients');
+  } catch (e) {
+    print(e);
+    throw Exception(e);
+  }
+}
+
 Future<Role> loginUser(int id, String password) async {
   try {
     final response = await http.post(Uri.parse('$domain/Login'),
         headers: <String, String>{
-          "Content-Type": "application/json; charset=UTF-8",
+          "Content-type": "application/json; charset=UTF-8",
         },
         body: jsonEncode(<String, dynamic>{'Id': id, 'Password': password}));
 

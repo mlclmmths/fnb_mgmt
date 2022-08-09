@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Role {
   final String role;
 
@@ -26,6 +28,50 @@ class Branch {
         branchName: json['BranName'],
         menuList: json['MenuList']);
   }
+}
+
+Restock restockFromJson(String str) => Restock.fromJson(json.decode(str));
+
+String restockToJson(Restock data) => json.encode(data.toJson());
+
+class Restock {
+  Restock({
+    this.branName,
+    this.item,
+  });
+
+  String? branName;
+  List<Item>? item;
+
+  factory Restock.fromJson(Map<String, dynamic> json) => Restock(
+        branName: json["BranName"],
+        item: List<Item>.from(json["Item"].map((x) => Item.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "BranName": branName,
+        "Item": List<dynamic>.from(item!.map((x) => x.toJson())),
+      };
+}
+
+class Item {
+  Item({
+    this.ingredient,
+    this.quantity,
+  });
+
+  String? ingredient;
+  int? quantity;
+
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
+        ingredient: json["Ingredient"],
+        quantity: json["Quantity"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "Ingredient": ingredient,
+        "Quantity": quantity,
+      };
 }
 
 class Menu {
@@ -105,23 +151,26 @@ class Sales {
 // }
 
 class Stock {
-  final int ingredientId;
-  final String ingredient;
-  final int quantity;
-  final String measurement;
-  final double costPerPax;
-  final double totalCost;
+  final int? restockId;
+  final int? ingredientId;
+  final String? ingredient;
+  final int? quantity;
+  final String? measurement;
+  final double? costPerPax;
+  final double? totalCost;
 
   const Stock(
-      {required this.ingredientId,
-      required this.ingredient,
-      required this.quantity,
-      required this.measurement,
-      required this.costPerPax,
-      required this.totalCost});
+      {this.restockId,
+      this.ingredientId,
+      this.ingredient,
+      this.quantity,
+      this.measurement,
+      this.costPerPax,
+      this.totalCost});
 
   factory Stock.fromJson(Map<String, dynamic> json) {
     return Stock(
+        restockId: json['RestockId'],
         ingredientId: json['IngredientId'],
         ingredient: json['Ingredient'],
         quantity: json['Quantity'],
@@ -131,6 +180,7 @@ class Stock {
   }
 
   Map toJson() => {
+        'restockId': restockId,
         'ingredientId': ingredientId,
         'ingredient': ingredient,
         'quantity': quantity,
@@ -141,7 +191,7 @@ class Stock {
 
   @override
   String toString() {
-    return '{ingredientId: $ingredientId, $ingredient, quantity: $quantity, measurement: $measurement, costPerPax: $costPerPax, totalCost: $totalCost}';
+    return '{restockId: $restockId, ingredientId: $ingredientId, $ingredient, quantity: $quantity, measurement: $measurement, costPerPax: $costPerPax, totalCost: $totalCost}';
   }
 }
 
@@ -204,5 +254,26 @@ class Employee {
         'primarySupervisor': primarySupervisor,
         'baseRate': baseRate,
         'pass': pass
+      };
+}
+
+ConfirmStock confirmStockFromJson(String str) =>
+    ConfirmStock.fromJson(json.decode(str));
+
+String confirmStockToJson(ConfirmStock data) => json.encode(data.toJson());
+
+class ConfirmStock {
+  ConfirmStock({
+    this.idList,
+  });
+
+  List<int>? idList;
+
+  factory ConfirmStock.fromJson(Map<String, dynamic> json) => ConfirmStock(
+        idList: List<int>.from(json["IdList"].map((x) => x)),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "IdList": List<dynamic>.from(idList!.map((x) => x)),
       };
 }
